@@ -41,24 +41,34 @@ def algorithmR(bdd):
     for v in range(bdd.nVariables, 0, -1):
         p = head[v]
         s = 0
-        # R3 check redundancy in each layer. remove nodes that have the same low and high nodes
-        # In the original algorithm, the two otherwise case in R3 is used to link all the node that are not
-        # deleted with together, by going through the aux of the node's low field, if two node adjacent have
-        # the same low field, then they are link together directly, if not, they are linked through one node's own
-        # aux field point the other node's low field, and the other nodes low field points to the other node itself.
-        # the two cases use different signs in the aux field, thus R4 can tell which case it is when cleaning it up
-        # Also in this way, the nodes are bucket sorted by their low field. Nodes with the same low field are linked
+        # R3 check redundancy in each layer. remove nodes that
+        # have the same low and high nodes
+        # In the original algorithm, the two otherwise case in R3 is
+        # used to link all the node that are not
+        # deleted with together, by going through the aux of the node's
+        # low field, if two node adjacent have
+        # the same low field, then they are link together directly, if not,
+        # they are linked through one node's own
+        # aux field point the other node's low field, and the other nodes
+        # low field points to the other node itself.
+        # the two cases use different signs in the aux field, thus R4 can
+        # tell which case it is when cleaning it up
+        # Also in this way, the nodes are bucket sorted by their low field.
+        # Nodes with the same low field are linked
         # together before going to the next different low field.
         while p != -1:  # go over all the nodes that have the same value (on the same layer)
             pPrime = p.aux
             q = p.high
-            if q.state1 < 0:  # q is deleted, q's low field points to the corresponding node not deleted.
+            # q is deleted, q's low field points to the corresponding node not deleted.
+            if q.state1 < 0:
                 p.high = q.low
             q = p.low
             if q.state1 < 0:
                 p.low = q.low
                 q = p.low  # set q to be the current p low field
-            if q == p.high:  # low field and high field points to the same node, the current node show be deleted
+            # low field and high field points to the same node,
+            # the current node show be deleted
+            if q == p.high:
                 p.state1 = -1  # mark as -1 if the node should be deleted
                 p.high = avail
                 p.aux = 0  # this node has been processed
@@ -93,12 +103,14 @@ def algorithmR(bdd):
                 p.aux = q  # link to next bucket from previous bucket.
                 p.state2 = 0
             p = q
-            while p.state2 > 0 and p.aux != 0:  # nodes in the same bucket, they are already linked.
+            # nodes in the same bucket, they are already linked.
+            while p.state2 > 0 and p.aux != 0:
                 p = p.aux
             if p.aux == 0:
                 rSign = -1
             r = p.aux
-        # after R4 all nodes remaining are link through their aux field, staring with s point to the first node.
+        # after R4 all nodes remaining are link through their aux field,
+        # staring with s point to the first node.
         # R5, loop on the remaining list
         if s == 0:  # there are no nodes left in the current layer.
             continue
@@ -108,15 +120,18 @@ def algorithmR(bdd):
         q = p
         while p != 0:  # loop on each p
             s = p.low
-            # R7: this loop only continues if low are the same, if low is not the same, go the next bucket. this
+            # R7: this loop only continues if low are the same,
+            # if low is not the same, go the next bucket. this
             # works because in R3, the nodes are already bucket sorted.
             while q != 0 and q.low == s:
                 r = q.high
-                if r.state2 >= 0:  # if sees a new high field, mark its aux field as negative
+                # if sees a new high field, mark its aux field as negative
+                if r.state2 >= 0:
                     r.state2 = -1
                     r.aux = q
                 else:
-                    # aux field is negative, it has been seen before, then the current node is the same as one
+                    # aux field is negative, it has been seen before,
+                    # then the current node is the same as one
                     # node before it, remove it.
                     q.low = r.aux
                     q.state1 = -1

@@ -24,13 +24,15 @@ class BDD:
         self.nodeList = [I0, I1]
         id = 2
         for i in range(pow(2, v-1)):
-            newNode = Node(id, v, self.nodeList[int(truthTable[2*i])], self.nodeList[int(truthTable[2*i+1])])
+            newNode = Node(id, v, self.nodeList[int(truthTable[2*i])],
+                           self.nodeList[int(truthTable[2*i+1])])
             self.nodeList.append(newNode)
             id += 1
         startingID = 2
         for v in range(self.nVariables-1, 0, -1):  # e.g. number of variables is 3, [2, 1]
             for i in range(pow(2, v-1)):
-                newNode = Node(id, v, self.nodeList[startingID+2*i], self.nodeList[startingID+2*i+1])
+                newNode = Node(id, v, self.nodeList[startingID+2*i],
+                               self.nodeList[startingID+2*i+1])
                 self.nodeList.append(newNode)
                 id += 1
             startingID += pow(2, v)
@@ -40,13 +42,15 @@ class BDD:
         dot = Digraph(comment='Binary Decision Diagram')
         p = self.root
         if p.id <= 1:
-            dot.node(str(p.id), str(p.id), shape='box', style='filled', color=".7 .3 1.0")
+            dot.node(str(p.id), str(p.id), shape='box',
+                     style='filled', color=".7 .3 1.0")
             dot.render(fileName, view=view)
             return
         # plot the two basic nodes, 1 and 0
         for i in range(2):
             n = self.nodeList[i]
-            dot.node(str(n.id), str(n.id), shape='box', style='filled', color=".7 .3 1.0")
+            dot.node(str(n.id), str(n.id), shape='box',
+                     style='filled', color=".7 .3 1.0")
         h = set()
         self.plotHelper(p, dot, h)
         dot.render(fileName, view=view)

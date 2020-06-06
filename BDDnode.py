@@ -8,8 +8,8 @@ class Node:
         self.value = value
         self.high = high
         self.low = low
-        self.state1 = 1  # corresponds to sign of the low field in original algorithm
-        self.state2 = 1  # corresponds to sign of the aux field in original algorithm
+        self.state1 = 1  # corresponds to sign of the low field in original algorithm R
+        self.state2 = 1  # corresponds to sign of the aux field in original algorithm R
         self.aux = 0
 
 
@@ -36,16 +36,20 @@ class BDD:
             startingID += pow(2, v)
         self.root = self.nodeList[-1]
 
-    def plotBDD(self, fileName):
+    def plotBDD(self, fileName, view=True):
         dot = Digraph(comment='Binary Decision Diagram')
         p = self.root
+        if p.id <= 1:
+            dot.node(str(p.id), str(p.id), shape='box', style='filled', color=".7 .3 1.0")
+            dot.render(fileName, view=view)
+            return
         # plot the two basic nodes, 1 and 0
         for i in range(2):
             n = self.nodeList[i]
             dot.node(str(n.id), str(n.id), shape='box', style='filled', color=".7 .3 1.0")
         h = set()
         self.plotHelper(p, dot, h)
-        dot.render(fileName, view=True)
+        dot.render(fileName, view=view)
 
     def plotHelper(self, root, dot, h):
         if root.id <= 1:  # this is the two base nodes

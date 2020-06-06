@@ -1,20 +1,29 @@
-from algorithmC import algorithmC
-from node import node
+from BDDnode import *
+from algorithmR import *
+from algorithmC import *
 
 
-# define a BDD tree.
-nodes = [None] * 9
-nodes[0] = node(5, 0, 0, 0)
-nodes[0] = node(5, 0, 0, 0)
-nodes[1] = node(5, 1, 1, 1)
-nodes[2] = node(4, 2, 0, 1)
-nodes[3] = node(4, 3, 1, 0)
-nodes[4] = node(3, 4, 3, 2)
-nodes[5] = node(3, 5, 1, 0)
-nodes[6] = node(2, 6, 0, 1)
-nodes[7] = node(2, 7, 5, 4)
-nodes[8] = node(1, 8, 7, 6)
+def dfs(root, nodes, N):  # N is the number of variables in the BDD function
+    if root.value == N+1:
+        if root not in nodes:
+            nodes.append(root)
+        return
+    dfs(root.low, nodes, N)
+    dfs(root.high, nodes, N)
+    nodes.append(root)
 
-c, cs = algorithmC(nodes)
-print("The number of vectors that makes f(x) 1 is ", c)
-print("The number of 1s in each node is ", cs)
+
+if __name__ == "__main__":
+    # define a BDD node sequence.
+    truthTable = [False, False, False, True, False, True, True, True]
+    # truthTable = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+    truthTable = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
+    # truthTable = [False, True, False, True, False, True, True, True]
+    bdd = BDD(truthTable)
+    algorithmR(bdd)
+    nodes = []
+    dfs(bdd.root, nodes, bdd.nVariables)  # put all the valid nodes in a list.
+
+    c, cs = algorithmC(nodes)
+    print("The number of vectors that makes f(x) 1 is ", c)
+    print("The number of 1s in each node is ", cs)

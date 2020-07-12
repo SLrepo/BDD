@@ -18,7 +18,7 @@ def algorithmR(bdd):
     head = [-1] * (bdd.nVariables + 1)  # variables counts start from 1
 
     # R1: dfs to mark all state2 of all nodes reachable from root negative
-    # and like all node that have the same value together begin with head.
+    # and link all node that have the same value together begin with head.
     def R1(s):
         if s == 0:
             return
@@ -67,7 +67,7 @@ def algorithmR(bdd):
                 p.low = q.low
                 q = p.low  # set q to be the current p low field
             # low field and high field points to the same node,
-            # the current node show be deleted
+            # the current node should be deleted
             if q == p.high:
                 p.state1 = -1  # mark as -1 if the node should be deleted
                 p.high = avail
